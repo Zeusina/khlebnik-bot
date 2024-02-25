@@ -15,7 +15,7 @@ func GetMessage(id string) (msg string) {
 		return "Произошла непредвиденная ошибка, попробуйте еще раз."
 	}
 	path := filepath.Join(workdir, "assets", "messages.json")
-	log.Info(path)
+	log.Debugf("'%s' - get messages from this", path)
 	messagesFile, err := os.ReadFile(path)
 	if err != nil {
 		log.Error(err)
