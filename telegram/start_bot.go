@@ -6,6 +6,7 @@ import (
 	"os/signal"
 
 	"github.com/Zeusina/khlebnik-bot/telegram/handlers"
+	"github.com/Zeusina/khlebnik-bot/utils"
 	"github.com/go-telegram/bot"
 	log "github.com/sirupsen/logrus"
 )
@@ -25,6 +26,7 @@ func StartBot() {
 	}
 
 	b.RegisterHandler(bot.HandlerTypeMessageText, "/start", bot.MatchTypePrefix, handlers.StartHandler)
+	b.RegisterHandler(bot.HandlerTypeMessageText, utils.GetMessage("questionrequest"), bot.MatchTypeExact, handlers.QuesionRequestHandler)
 
 	b.Start(ctx)
 }
