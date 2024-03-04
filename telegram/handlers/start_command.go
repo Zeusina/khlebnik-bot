@@ -14,5 +14,15 @@ func StartHandler(ctx context.Context, b *bot.Bot, update *models.Update) {
 	b.SendMessage(ctx, &bot.SendMessageParams{
 		ChatID: update.Message.Chat.ID,
 		Text:   utils.GetMessage("startmessage"),
+		ReplyMarkup: models.ReplyKeyboardMarkup{
+			Keyboard: [][]models.KeyboardButton{
+				[]models.KeyboardButton{
+					models.KeyboardButton{
+						Text: utils.GetMessage("askquestion"),
+					},
+				},
+			},
+			ResizeKeyboard: true,
+		},
 	})
 }
