@@ -24,9 +24,10 @@ func StartBot() {
 	if err != nil {
 		panic(err)
 	}
-
+	utils.InitFSM()
 	b.RegisterHandler(bot.HandlerTypeMessageText, "/start", bot.MatchTypePrefix, handlers.StartHandler)
-	b.RegisterHandler(bot.HandlerTypeMessageText, utils.GetMessage("questionrequest"), bot.MatchTypeExact, handlers.QuesionRequestHandler)
+	b.RegisterHandler(bot.HandlerTypeMessageText, utils.GetMessage("askquestion"), bot.MatchTypeExact, handlers.QuesionRequestHandler)
+	b.RegisterHandlerMatchFunc(handlers.QuestionFSMCheck, handlers.QuestionHandler)
 
 	b.Start(ctx)
 }
