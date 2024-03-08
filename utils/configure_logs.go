@@ -20,6 +20,8 @@ func ConfigureLogs() {
 		log.SetLevel(log.DebugLevel)
 	case "ERROR":
 		log.SetLevel(log.ErrorLevel)
+	case "WARNING":
+		log.SetLevel(log.WarnLevel)
 	case "FATAL":
 		log.SetLevel(log.FatalLevel)
 	default:
