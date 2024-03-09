@@ -57,37 +57,44 @@ func QuestionHandler(ctx context.Context, b *bot.Bot, update *models.Update) {
 
 	json.Unmarshal(body, &bodyStruct)
 	log.WithField("content", bodyStruct).Debug("get prediction for question")
+	if bodyStruct[0].Score >= 0.67 {
+		baseurl, err = url.Parse(fmt.Sprintf("http://%s:8080/answer/%d", host, bodyStruct[0].CorpusId))
+		if err != nil {
+			log.Error(err)
+		}
 
-	baseurl, err = url.Parse(fmt.Sprintf("http://%s:8080/answer/%d", host, bodyStruct[0].CorpusId))
-	if err != nil {
-		log.Error(err)
+		var answer questionAnswer
+
+		questionAnswerResponse, err := http.Get(baseurl.String())
+		if err != nil {
+			log.Error(err)
+		}
+		body, err = io.ReadAll(questionAnswerResponse.Body)
+		if err != nil {
+			log.Error(err)
+		}
+		defer questionAnswerResponse.Body.Close()
+		err = json.Unmarshal(body, &answer)
+		if err != nil {
+			log.Error(err)
+		}
+		log.WithField("content", string(body)).Debug("Get answer for question")
+
+		b.EditMessageText(ctx, &bot.EditMessageTextParams{
+			MessageID: questionMessage.ID,
+			ChatID:    questionMessage.Chat.ID,
+			Text:      answer.Answer,
+		})
+		log.WithField("messagetext", answer.Answer).Debug("Message edited")
+	} else {
+		b.EditMessageText(ctx, &bot.EditMessageTextParams{
+			MessageID: questionMessage.ID,
+			ChatID:    questionMessage.Chat.ID,
+			Text:      utils.GetMessage("calloperator"),
+		})
+		log.WithField("messagetext", utils.GetMessage("calloperator")).Debug("Message edited")
 	}
 
-	var answer questionAnswer
-
-	questionAnswerResponse, err := http.Get(baseurl.String())
-	if err != nil {
-		log.Error(err)
-	}
-	body, err = io.ReadAll(questionAnswerResponse.Body)
-	if err != nil {
-		log.Error(err)
-	}
-	defer questionAnswerResponse.Body.Close()
-	err = json.Unmarshal(body, &answer)
-	if err != nil {
-		log.Error(err)
-	}
-	log.WithField("content", string(body)).Debug("Get answer for question")
-	_, err = b.EditMessageText(ctx, &bot.EditMessageTextParams{
-		MessageID: questionMessage.ID,
-		ChatID:    questionMessage.Chat.ID,
-		Text:      answer.Answer,
-	})
-	if err != nil {
-		log.Error(err)
-	}
-	log.WithField("messagetext", answer.Answer).Debug("Message edited")
 }
 
 type answerPredict struct {
