@@ -101,16 +101,6 @@ func QuestionHandler(ctx context.Context, b *bot.Bot, update *models.Update) {
 			MessageID: questionMessage.ID,
 			ChatID:    questionMessage.Chat.ID,
 			Text:      utils.GetMessage("calloperator"),
-			ReplyMarkup: models.ReplyKeyboardMarkup{
-				Keyboard: [][]models.KeyboardButton{
-					{
-						{
-							Text: utils.GetMessage("askquestion"),
-						},
-					},
-				},
-				ResizeKeyboard: true,
-			},
 		})
 		log.WithField("messagetext", utils.GetMessage("calloperator")).Debug("Message edited")
 	}

@@ -15,8 +15,5 @@ func QuesionRequestHandler(ctx context.Context, b *bot.Bot, update *models.Updat
 	b.SendMessage(ctx, &bot.SendMessageParams{
 		ChatID: update.Message.Chat.ID,
 		Text:   utils.GetMessage("questionrequest"),
-		ReplyMarkup: models.ReplyKeyboardRemove{
-			RemoveKeyboard: true,
-		},
 	})
 }
