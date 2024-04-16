@@ -46,6 +46,11 @@ func QuestionHandler(ctx context.Context, b *bot.Bot, update *models.Update) {
 
 	if err != nil {
 		log.Error(err)
+		b.SendMessage(ctx, &bot.SendMessageParams{
+			ChatID: update.Message.Chat.ID,
+			Text:   utils.GetMessage("aierror"),
+		})
+		return
 	}
 	defer question_predict.Body.Close()
 	body, err := io.ReadAll(question_predict.Body)
@@ -68,6 +73,11 @@ func QuestionHandler(ctx context.Context, b *bot.Bot, update *models.Update) {
 		questionAnswerResponse, err := http.Get(baseurl.String())
 		if err != nil {
 			log.Error(err)
+			b.SendMessage(ctx, &bot.SendMessageParams{
+				ChatID: update.Message.Chat.ID,
+				Text:   utils.GetMessage("aierror"),
+			})
+			return
 		}
 		body, err = io.ReadAll(questionAnswerResponse.Body)
 		if err != nil {
