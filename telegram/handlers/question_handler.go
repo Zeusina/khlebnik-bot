@@ -96,6 +96,21 @@ func QuestionHandler(ctx context.Context, b *bot.Bot, update *models.Update) {
 			Text:      answer.Answer,
 		})
 		log.WithField("messagetext", answer.Answer).Debug("Message edited")
+		b.SendMessage(ctx, &bot.SendMessageParams{
+			ChatID: update.Message.Chat.ID,
+			Text:   utils.GetMessage("questionend"),
+			ReplyMarkup: models.ReplyKeyboardMarkup{
+				Keyboard: [][]models.KeyboardButton{
+					{
+						{
+							Text: utils.GetMessage("askquestion"),
+						},
+					},
+				},
+				ResizeKeyboard: true,
+			},
+		})
+		log.WithField("userid", update.Message.From.ID).Debug("End question message sent")
 	} else {
 		b.EditMessageText(ctx, &bot.EditMessageTextParams{
 			MessageID: questionMessage.ID,
@@ -103,6 +118,21 @@ func QuestionHandler(ctx context.Context, b *bot.Bot, update *models.Update) {
 			Text:      utils.GetMessage("calloperator"),
 		})
 		log.WithField("messagetext", utils.GetMessage("calloperator")).Debug("Message edited")
+		b.SendMessage(ctx, &bot.SendMessageParams{
+			ChatID: update.Message.Chat.ID,
+			Text:   utils.GetMessage("questionendfail"),
+			ReplyMarkup: models.ReplyKeyboardMarkup{
+				Keyboard: [][]models.KeyboardButton{
+					{
+						{
+							Text: utils.GetMessage("askquestion"),
+						},
+					},
+				},
+				ResizeKeyboard: true,
+			},
+		})
+		log.WithField("userid", update.Message.From.ID).Debug("End question message sent")
 	}
 
 }
