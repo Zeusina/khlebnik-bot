@@ -11,7 +11,7 @@ import (
 
 func StartHandler(ctx context.Context, b *bot.Bot, update *models.Update) {
 	log.WithField("userid", update.Message.From.ID).Debug("Bot started")
-	b.SendMessage(ctx, &bot.SendMessageParams{
+	_, err := b.SendMessage(ctx, &bot.SendMessageParams{
 		ChatID: update.Message.Chat.ID,
 		Text:   utils.GetMessage("startmessage"),
 		ReplyMarkup: models.ReplyKeyboardMarkup{
@@ -24,5 +24,9 @@ func StartHandler(ctx context.Context, b *bot.Bot, update *models.Update) {
 			},
 			ResizeKeyboard: true,
 		},
+		ParseMode: models.ParseModeHTML,
 	})
+	if err != nil {
+		log.Error(err)
+	}
 }
